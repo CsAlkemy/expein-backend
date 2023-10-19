@@ -8,7 +8,6 @@ async function bootstrap() {
     .setTitle('Expein API Documentation')
     .setDescription('API documentation of Expein Financial tracker')
     .setVersion('0.1')
-    .addTag('User Login')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('apiDoc', app, document);
