@@ -28,13 +28,30 @@ export class ExpenseService {
       throw error;
     }
   }
-  findOne(id: number) {
-    return `This action returns a #${id} expense`;
+  async findOne(id: string) {
+    try {
+      return await this.mongoService.findById({ _id: id });
+    } catch (error) {
+      throw error;
+    }
   }
-  update(id: number, updateExpenseDto: UpdateExpenseDto) {
-    return `This action updates a #${id} expense`;
+  async update(id: string, updateExpenseDto: UpdateExpenseDto) {
+    try {
+      return await this.mongoService.updateOne(
+        { _id: id },
+        {
+          ...updateExpenseDto,
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
   }
-  remove(id: number) {
-    return `This action removes a #${id} expense`;
+  async remove(id: string) {
+    try {
+      return await this.mongoService.deleteOne({ _id: id });
+    } catch (error) {
+      throw error;
+    }
   }
 }
