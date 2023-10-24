@@ -1,26 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLendDto } from './dto/create-lend.dto';
 import { UpdateLendDto } from './dto/update-lend.dto';
+import { Lend } from './schema/lend.schema';
+import { CreateLendDto } from './dto/create-lend.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import mongooes from 'mongoose';
 
 @Injectable()
 export class LendService {
-  create(createLendDto: CreateLendDto) {
-    return 'This action adds a new lend';
-  }
+  constructor(
+    @InjectModel(Lend.name)
+    private mongoService: mongooes.Model<Lend>,
+  ) {}
 
-  findAll() {
-    return `This action returns all lend`;
+  async create(createLendDto: CreateLendDto): Promise<Lend> {
+    try {
+      return await this.mongoService.create({
+        ...createLendDto,
+      });
+    } catch (error) {
+      return error;
+    }
   }
-
-  findOne(id: number) {
-    return `This action returns a #${id} lend`;
+  async findAll(): Promise<Lend[]> {
+    try {
+      return await this.mongoService.find({});
+    } catch (error) {
+      throw error;
+    }
   }
-
-  update(id: number, updateLendDto: UpdateLendDto) {
-    return `This action updates a #${id} lend`;
+  async findOne(id: string) {
+    try {
+      return await this.mongoService.findById({ _id: id });
+    } catch (error) {
+      throw error;
+    }
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} lend`;
+  async update(id: string, updateLendDto: UpdateLendDto) {
+    try {
+      return await this.mongoService.updateOne(
+        { _id: id },
+        {
+          ...updateLendDto,
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+  async remove(id: string) {
+    try {
+      return await this.mongoService.deleteOne({ _id: id });
+    } catch (error) {
+      throw error;
+    }
   }
 }
