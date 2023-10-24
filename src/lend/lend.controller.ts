@@ -1,44 +1,78 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { LendService } from './lend.service';
 import { CreateLendDto } from './dto/create-lend.dto';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PayloadResponseDto } from '../common/dto/payload-response.dto';
+import { LendService } from './lend.service';
 import { UpdateLendDto } from './dto/update-lend.dto';
-import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Lend')
 @Controller('api/v1/lend')
 export class LendController {
-  constructor(private readonly lendService: LendService) {}
-
+  constructor(private landService: LendService) {}
   @Post()
-  create(@Body() createLendDto: CreateLendDto) {
-    return this.lendService.create(createLendDto);
+  @UsePipes(new ValidationPipe())
+  @ApiBody({ type: CreateLendDto })
+  @ApiResponse({ description: 'Add Borrow or Lend', status: HttpStatus.OK })
+  async create(@Body() createLendDto: CreateLendDto) {
+    const lend = await this.landService.create(createLendDto);
+    return new PayloadResponseDto({
+      statusCode: HttpStatus.OK,
+      message: lend?.isLend? 'Lend has been successfully created':'Borrow has been successfully created',
+      payload: lend,
+    });
   }
 
   @Get()
-  findAll() {
-    return this.lendService.findAll();
+  async findAll() {
+    const res = await this.landService.findAll();
+    return new PayloadResponseDto({
+      statusCode: HttpStatus.OK,
+      message: 'Data Fetch successfully',
+      payload: res,
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lendService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const res = await this.landService.findOne(id);
+    return new PayloadResponseDto({
+      statusCode: HttpStatus.OK,
+      message: 'Data Fetch successfully',
+      payload: res,
+    });
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLendDto: UpdateLendDto) {
-    return this.lendService.update(+id, updateLendDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateLendDto: UpdateLendDto,
+  ) {
+    const lend = await this.landService.update(id, updateLendDto);
+    return new PayloadResponseDto({
+      statusCode: HttpStatus.OK,
+      message: 'Updated Successfully',
+      payload: lend,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.lendService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const res = await this.landService.remove(id);
+    return new PayloadResponseDto({
+      statusCode: HttpStatus.OK,
+      message: 'Data Deleted Successfully',
+      payload: res,
+    });
   }
 }

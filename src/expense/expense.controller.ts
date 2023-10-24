@@ -61,7 +61,6 @@ export class ExpenseController {
     @Body() updateExpenseDto: UpdateExpenseDto,
   ) {
     const expense = await this.expenseService.update(id, updateExpenseDto);
-    console.log(expense);
     return new PayloadResponseDto({
       statusCode: HttpStatus.OK,
       message: 'Updated Successfully',
