@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsDateString,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsDateString, IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateLendDto {
@@ -34,7 +28,7 @@ export class CreateLendDto {
 
   @ApiProperty({
     description: 'Amount',
-    example: 100.00,
+    example: 100.0,
     required: true,
   })
   @IsNumber()
